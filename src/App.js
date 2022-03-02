@@ -6,7 +6,7 @@ function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <div className="App">
+    <div data-test="component-app" className="App">
       <h1>
         The counter is currently&nbsp;
         <span>{count}</span>
