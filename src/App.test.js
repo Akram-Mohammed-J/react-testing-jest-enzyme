@@ -31,12 +31,71 @@ Enzyme.configure({ adapter: new EnzymeAdapter() });
 //   expect(wrapper.exists()).toBe(true);
 // });
 
+/** factory function to create ShallowWrapper for the appComponent
+    @function setup 
+    @returns {ShallowWrapper}
+   */
+const setup = () => shallow(<App />);
+
+const testByAttr = (wrapper, attrVal) =>
+  wrapper.find(`[data-test='${attrVal}']`);
+
 test("renders the component without any errors ", () => {
-  const wrapper = shallow(<App />);
-  const appComponent = wrapper.find("[data-test='component-app']");
+  const wrapper = setup();
+  const appComponent = testByAttr(wrapper, "component-app");
   expect(appComponent.length).toBe(1);
 });
-test("renders the counter display", () => {});
-test("render the increment button without errors", () => {});
-test("Counter  display starts at 0", () => {});
-test("clicking on increment button increase the counter display", () => {});
+test("renders the counter display", () => {
+  const wrapper = setup();
+  const counterDisplay = testByAttr(wrapper, "counter-display");
+  expect(counterDisplay.length).toBe(1);
+});
+test("render the increment button without errors", () => {
+  const wrapper = setup();
+  const incrementButton = testByAttr(wrapper, "increment-button");
+  expect(incrementButton.length).toBe(1);
+});
+test("render the decrement button without errors", () => {
+  const wrapper = setup();
+  const decrementButton = testByAttr(wrapper, "decrement-button");
+  expect(decrementButton.length).toBe(1);
+});
+test("Counter  display starts at 0", () => {
+  const wrapper = setup();
+  const intialValue = testByAttr(wrapper, "count").text();
+  expect(intialValue).toBe("0");
+});
+test("clicking on decrement button counter is zero check for error message", () => {
+  const wrapper = setup();
+  const decrementButton = testByAttr(wrapper, "decrement-button");
+  decrementButton.simulate("click");
+  const Value = testByAttr(wrapper, "count").text();
+  expect(Value).toBe("0");
+  const errorMessage = testByAttr(wrapper, "error-message").text();
+  expect(errorMessage).toBe("you can't decrease the count less than zero");
+});
+test("clicking on increment button increase the counter display", () => {
+  const wrapper = setup();
+  /**
+   * to make the button click automated {Shallow Wrapper}
+   * provides the method called simulate(event,[..args])
+   **/
+  console.log(wrapper.debug());
+  const errorMessage = testByAttr(wrapper, "error-message");
+  expect(errorMessage.length).toBe(0);
+  const incrementButton = testByAttr(wrapper, "increment-button");
+  incrementButton.simulate("click");
+  const intialValue = testByAttr(wrapper, "count").text();
+  expect(intialValue).toBe("1");
+});
+test("clicking on decrement button decrease the counter display", () => {
+  const wrapper = setup();
+  /**
+   * to make the button click automated {Shallow Wrapper}
+   * provides the method called simulate(event,[..args])
+   **/
+  const decrementButton = testByAttr(wrapper, "decrement-button");
+  decrementButton.simulate("click");
+  const value = testByAttr(wrapper, "count").text();
+  expect(value).toBe("0");
+});
